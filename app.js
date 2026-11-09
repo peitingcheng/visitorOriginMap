@@ -50,7 +50,6 @@ function drawBase() {
 
 function drawData() {
   const cities = new Map();
-  const states = new Set();
   let domesticTotal = 0;
   for (const [zip, count] of responses(local.zip)) {
     if (!Object.hasOwn(places.zips, zip)) continue;
@@ -58,22 +57,17 @@ function drawData() {
     const state = places.cities[city][0].slice(-2);
     if (scope === 'texas' && state !== 'TX') continue;
     cities.set(city, (cities.get(city) || 0) + count);
-    states.add(state);
     domesticTotal += count;
   }
 
   let points;
   let total = domesticTotal;
-  let placeCount = states.size;
-  let placeCaption = 'States & D.C.';
   if (scope === 'world') {
     const countries = new Map(responses(local.country));
     countries.set('US', domesticTotal);
     points = [...countries].filter(([code, count]) => count > 0 && Object.hasOwn(maps.world.positions, code))
       .map(([code, count]) => [names.of(code), ...maps.world.positions[code], count]);
     total = points.reduce((sum, point) => sum + point[3], 0);
-    placeCount = points.length;
-    placeCaption = 'Countries & territories';
   } else {
     points = [...cities].map(([id, count]) => {
       const [name, x, y] = places.cities[id];
@@ -82,8 +76,6 @@ function drawData() {
     if (scope === 'texas') {
       const [s, dx, dy] = maps.texas.transform;
       points = points.map(([name, x, y, count]) => [name, x * s + dx, y * s + dy, count]);
-      placeCount = cities.size;
-      placeCaption = 'Texas cities';
     }
   }
 
@@ -114,11 +106,7 @@ function drawData() {
     get('labels').replaceChildren(...labels);
   }
   get('response-total').textContent = numbers.format(total);
-  get('state-total').textContent = numbers.format(placeCount);
-  get('place-caption').textContent = placeCaption;
-  get('intro-copy').textContent = responses(local.zip).length || responses(local.country).length
-    ? 'See where other visitors call home. Add your hometown to the map.'
-    : 'Be the first to add your hometown to the map.';
+  get('response-label').textContent = total === 1 ? 'response' : 'responses';
 }
 
 function setScope(next) {
@@ -130,7 +118,6 @@ function setScope(next) {
   });
   get('zoom-out').disabled = index === 0;
   get('zoom-in').disabled = index === scopes.length - 1;
-  get('scope-title').textContent = scopeNames[scope].toUpperCase();
   get('map-name').textContent = scopeNames[scope] + ' visitor origins map';
   drawBase();
   drawData();
@@ -144,6 +131,24 @@ function zoom(step) {
 scopeButtons.forEach((button) => button.addEventListener('click', () => setScope(button.dataset.scope)));
 get('zoom-in').addEventListener('click', () => zoom(1));
 get('zoom-out').addEventListener('click', () => zoom(-1));
+
+const fullscreenButton = get('fullscreen');
+if (document.fullscreenEnabled && document.documentElement.requestFullscreen) {
+  fullscreenButton.hidden = false;
+  fullscreenButton.addEventListener('click', async () => {
+    try {
+      if (document.fullscreenElement) await document.exitFullscreen();
+      else await document.documentElement.requestFullscreen();
+    } catch {
+      get('confirmation').textContent = 'Full screen is unavailable in this window.';
+    }
+  });
+  document.addEventListener('fullscreenchange', () => {
+    const isFullscreen = Boolean(document.fullscreenElement);
+    fullscreenButton.setAttribute('aria-pressed', String(isFullscreen));
+    fullscreenButton.setAttribute('aria-label', isFullscreen ? 'Exit full screen' : 'Enter full screen');
+  });
+}
 
 const frame = get('map-frame');
 function touchDistance(touches) {
