@@ -1,6 +1,6 @@
 # Visitor Origins Map
 
-An Iwo Jima Museum prototype for a front-desk iPad. Visitors can enter a US ZIP code or choose a country or territory. The map has World, U.S., and Texas views and starts without sample responses. Clear data removes only responses saved in the current browser.
+A prototype for a front-desk iPad. Visitors can enter a US ZIP code or choose a country or territory. The map has World, U.S., and Texas views and starts without sample responses. Clear data removes only responses saved in the current browser.
 
 ## Run locally
 
