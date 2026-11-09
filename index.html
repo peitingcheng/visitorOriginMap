@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#1d1d1d">
+<meta name="description" content="Explore where Iwo Jima Museum visitors are from and add your hometown to the map.">
+<title>Visitor Origins Map | Iwo Jima Museum</title>
+<link rel="stylesheet" href="style.css">
+<script src="app.js" defer></script>
+</head>
+<body>
+<div class="site">
+  <header class="masthead">
+    <div class="brand"><span class="brand-icon" aria-hidden="true">✦</span><span>IWO JIMA MUSEUM</span></div>
+    <div class="debug-tools">
+      <span class="demo-tag">PROTOTYPE</span>
+      <button type="button" id="clear-data" class="debug-button" disabled>Clear data</button>
+    </div>
+  </header>
+  <main>
+    <section class="intro" aria-labelledby="page-title">
+      <div><p class="eyebrow">THE VISITOR MAP</p><h1 id="page-title">Where are you<br class="mobile-break"> visiting from?</h1>
+      <p class="intro-copy" id="intro-copy">Add your hometown to the map.</p></div>
+      <button id="open" class="primary" type="button" disabled><span aria-hidden="true">+</span> Add your location</button>
+    </section>
+    <section class="map-card" aria-label="Visitor origins by location">
+      <header class="map-header"><div class="map-title"><span aria-hidden="true">✦</span> <span id="scope-title">UNITED STATES</span></div>
+        <div class="scales" role="group" aria-label="Map scale">
+          <button type="button" data-scope="world" aria-pressed="false" disabled>World</button>
+          <button type="button" data-scope="us" aria-pressed="true" disabled>U.S.</button>
+          <button type="button" data-scope="texas" aria-pressed="false" disabled>Texas</button>
+        </div>
+        <div class="legend" aria-label="Larger stars represent more responses"><span class="legend-dots" aria-hidden="true"><i>✦</i><i>✦</i><i>✦</i></span> More responses</div>
+      </header>
+      <div class="map-frame" id="map-frame">
+        <div class="zoom" role="group" aria-label="Zoom controls">
+          <button type="button" id="zoom-in" aria-label="Zoom in" disabled>+</button>
+          <button type="button" id="zoom-out" aria-label="Zoom out" disabled>−</button>
+        </div>
+        <p id="loading" class="loading">Loading the map…</p>
+        <svg id="map" viewBox="0 0 900 530" role="img" aria-labelledby="map-name map-desc" hidden>
+          <title id="map-name">United States visitor origins map</title>
+          <desc id="map-desc">Stars show visitor origins. Larger stars represent more responses. A ringed star marks the museum.</desc>
+          <g class="guides" aria-hidden="true">
+            <circle cx="82" cy="560" r="120"/><circle cx="82" cy="560" r="205"/><circle cx="82" cy="560" r="290"/>
+            <circle cx="82" cy="560" r="375"/><circle cx="82" cy="560" r="460"/><circle cx="82" cy="560" r="545"/>
+            <circle cx="82" cy="560" r="630"/><circle cx="82" cy="560" r="715"/><circle cx="82" cy="560" r="800"/>
+            <path d="M82 560L300 0M82 560L690 0M82 560L900 240"/>
+          </g>
+          <g id="insets"><path d="M20 363H185V474H20ZM190 415H287V499H190Z" fill="none" stroke="#ccc8b9" stroke-dasharray="3 4"/>
+            <text class="inset-label" x="27" y="466">ALASKA</text><text class="inset-label" x="198" y="490">HAWAII</text></g>
+          <g id="states"></g><g id="dots"></g><g id="labels"></g><g id="museum"></g>
+        </svg>
+      </div>
+      <footer class="map-footer">
+        <div><span id="response-total" class="figure">—</span><span class="caption">Responses in view</span></div>
+        <div><span id="state-total" class="figure">—</span><span class="caption" id="place-caption">States &amp; D.C.</span></div>
+        <div class="map-note"><span class="caption">Map guide</span><span id="map-note">Pinch to zoom or choose a scale.</span></div>
+      </footer>
+    </section>
+    <p class="status" id="confirmation" role="status" aria-live="polite"></p>
+  </main>
+  <footer class="credits">Map boundaries: <a href="https://github.com/topojson/us-atlas">U.S. Census</a> and <a href="https://github.com/topojson/world-atlas">Natural Earth</a>. Location data: <a href="https://github.com/mledoze/countries">Countries</a> and <a href="https://www.geonames.org/">GeoNames</a>.</footer>
+</div>
+<dialog id="entry" aria-labelledby="dialog-title">
+  <div class="dialog-inner">
+    <button id="close" class="close" type="button" aria-label="Close">×</button>
+    <p class="eyebrow">ADD YOUR LOCATION</p>
+    <h2 id="dialog-title">Where do you<br> call home?</h2>
+    <div class="mode" role="group" aria-label="Location type">
+      <button id="domestic" type="button" aria-pressed="true">United States</button>
+      <button id="abroad" type="button" aria-pressed="false">Outside the U.S.</button>
+    </div>
+    <form id="location-form" novalidate>
+      <div id="zip-fields"><label for="zip">ZIP code</label><input id="zip" type="text" inputmode="numeric" maxlength="5" autocomplete="off" placeholder="Enter 5 digits" aria-describedby="form-error"></div>
+      <div id="country-fields" hidden><label for="country">Country or territory</label><select id="country" aria-describedby="form-error"><option value="">Select a location</option></select></div>
+      <p id="form-error" class="error" role="alert"></p>
+      <button class="primary submit" type="submit">Add to the map <span aria-hidden="true">→</span></button>
+    </form>
+  </div>
+</dialog>
+</body>
+</html>
