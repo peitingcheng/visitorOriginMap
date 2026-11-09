@@ -241,16 +241,12 @@ get('location-form').addEventListener('submit', (event) => {
   get('confirmation').textContent = 'Thanks for adding your location!';
 });
 
-async function load(path) {
-  const response = await fetch(path);
-  if (!response.ok) throw new Error('Unable to load ' + path);
-  return response.json();
-}
-
-Promise.all([load('map.json'), load('places.json'), load('views.json')]).then(([mapData, placeData, views]) => {
+try {
+  if (typeof visitorMapData === 'undefined') throw new Error('Map data script did not load.');
+  const { us, places: placeData, views } = visitorMapData;
   places = placeData;
   maps = {
-    us: mapData,
+    us,
     texas: { ...views.texas, paths: [views.texas.path] },
     world: { ...views.world, labels: [] }
   };
@@ -264,6 +260,7 @@ Promise.all([load('map.json'), load('places.json'), load('views.json')]).then(([
   get('loading').hidden = true;
   get('open').disabled = false;
   get('clear-data').disabled = false;
-}).catch(() => {
+} catch (error) {
+  console.error('Visitor Origins Map failed to load:', error);
   get('loading').textContent = 'The map couldn’t load. Refresh the page to try again.';
-});
+}

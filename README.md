@@ -4,13 +4,13 @@ An Iwo Jima Museum prototype for a front-desk iPad. Visitors can enter a US ZIP 
 
 ## Run locally
 
-From this folder, run:
+Open `index.html` directly for a preview. To run it through a local HTTP server with a stable browser storage origin, run:
 
 ```sh
 python3 -m http.server 8000
 ```
 
-Open http://localhost:8000. Serve these static files over HTTP so the map can load its bundled data files.
+Open http://localhost:8000.
 
 ## Data
 
